@@ -1,0 +1,30 @@
+services:
+  pokedexapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pokedex-prod
+    container_name: pokedexapp
+    restart: always
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    environment:
+      - MONGODB=mongodb://mongo-db:27017/nest-pokemon
+      - PORT=${PORT:-3000}
+      - NODE_ENV=production
+    depends_on:
+      - mongo-db
+
+  mongo-db:
+    image: mongo:7
+    container_name: mongo-db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGODB_DATABASE=nest-pokemon
+    volumes:
+      - mongo-db-data:/data/db
+
+volumes:
+  mongo-db-data:
